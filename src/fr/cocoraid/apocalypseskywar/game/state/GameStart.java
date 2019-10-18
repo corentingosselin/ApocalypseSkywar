@@ -3,6 +3,7 @@ package fr.cocoraid.apocalypseskywar.game.state;
 import fr.cocoraid.apocalypseskywar.events.EventListener;
 import fr.cocoraid.apocalypseskywar.game.GameMessage;
 import fr.cocoraid.apocalypseskywar.position.Point;
+import fr.cocoraid.apocalypseskywar.map.MapInfo;
 import fr.cocoraid.apocalypseskywar.utils.UtilLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -115,8 +116,6 @@ public class GameStart extends GameState {
 
 
     private void start() {
-
-
        task = new BukkitRunnable() {
             int time = 5;
             @Override
@@ -127,7 +126,6 @@ public class GameStart extends GameState {
                     this.cancel();
                     gm.setCurrent(new GameRunning());
                     gm.getCurrent().run();
-                    gm.getSelectedDisasters().forEach(d -> d.start());
                 }
             }
         }.runTaskTimer(instance,0,20);

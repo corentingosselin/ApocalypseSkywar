@@ -3,10 +3,6 @@ package fr.cocoraid.apocalypseskywar.command;
 import fr.cocoraid.apocalypseskywar.ApocalypseSkywar;
 import fr.cocoraid.apocalypseskywar.map.MapManager;
 import fr.cocoraid.apocalypseskywar.position.WorldMap;
-import fr.cocoraid.apocalypseskywar.utils.UtilLocation;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,11 +21,8 @@ public class TestCMD implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender instanceof Player) {
             Player p = (Player) sender;
-            if(args.length == 1) {
-                Location l = p.getLocation();
-
-            }
-
+            p.sendMessage("test");
+            mapManager.pasteTemplate(WorldMap.FROOZEN_FOREST);
         }
         return false;
     }

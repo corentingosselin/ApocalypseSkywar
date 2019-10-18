@@ -16,13 +16,12 @@ import org.bukkit.scheduler.BukkitTask;
 public class GameWaiting extends GameState {
 
     private final int MAX_PLAYER = 6;
-    private final int MIN_PLAYER = 4;
+    private final int MIN_PLAYER = 2;
 
     private BukkitTask taskBeforeStart;
 
-    private int timeBeforeStart = 30;
+    private int timeBeforeStart = 20;
     private int playerCount = 0;
-
 
     public GameWaiting() {
 
@@ -39,8 +38,6 @@ public class GameWaiting extends GameState {
             public void onJoin(PlayerJoinEvent e) {
                 e.getPlayer().teleport(instance.getLobby());
                 e.getPlayer().setGameMode(GameMode.SURVIVAL);
-                e.getPlayer().getInventory().clear();
-                e.getPlayer().setHealth(20);
                 e.setJoinMessage(GameMessage.JOIN_PLAYER.replace("%player",e.getPlayer().getName()));
                 playerCount++;
                 if(playerCount >= MAX_PLAYER) {
@@ -77,10 +74,6 @@ public class GameWaiting extends GameState {
 
 
     public void startBegin() {
-        if(mapManager.getMapInfo() == null) {
-            mapManager.setVoteAllowed(false);
-           mapManager.pasteTemplate(mapManager.selectMap());
-        }
         taskBeforeStart = new BukkitRunnable() {
             @Override
             public void run() {

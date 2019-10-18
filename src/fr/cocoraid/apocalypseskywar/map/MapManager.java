@@ -1,16 +1,15 @@
 package fr.cocoraid.apocalypseskywar.map;
 
 import fr.cocoraid.apocalypseskywar.ApocalypseSkywar;
-import fr.cocoraid.apocalypseskywar.arena.Arena;
 import fr.cocoraid.apocalypseskywar.position.WorldMap;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
-import org.bukkit.event.world.WorldSaveEvent;
-import org.bukkit.event.world.WorldUnloadEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,22 +21,23 @@ import java.util.UUID;
 public class MapManager implements Listener {
 
     private Map<UUID, WorldMap> voters = new HashMap<>();
-    private boolean vote = true;
+
     private MapInfo mapInfo;
-    private WorldMap mapSelected;
-    private Arena arena;
+    private WorldMap map = WorldMap.FROOZEN_FOREST;
+
     private ApocalypseSkywar instance;
     public MapManager(ApocalypseSkywar instance) {
         this.instance = instance;
     }
 
 
+    //TODO at 10 seconds before starting we must disable vote system
     public WorldMap selectMap() {
         WorldMap bestMap = null;
         if(voters.isEmpty()) {
             //bestMap = random
             Random r = new Random();
-            return WorldMap.POISONOUS_ISLANDS;
+
         } else if(voters.size() == 1) {
             return voters.values().iterator().next();
         }
@@ -68,108 +68,45 @@ public class MapManager implements Listener {
 
     }
 
-    @EventHandler(priority= EventPriority.HIGHEST)
-    public void noLagOnLoad(org.bukkit.event.world.WorldInitEvent event) {
-        World world = event.getWorld();
-        world.setKeepSpawnInMemory(false);
+    @EventHandler
+    public void worldloaded(WorldLoadEvent e) {
+        System.out.println("world loaded " + e.getWorld());
     }
 
-    @EventHandler
-    public void worldLoaded(WorldLoadEvent e) {
-        if(mapSelected == null) {
-            System.out.println(e.getWorld().getName() + " has not been recognized ! " +
-                    "Because any map has been selected from the voting system");
-            return;
-        }
-        World w = e.getWorld();
-        System.out.println("world loaded " + w.getName());
-        w.setGameRuleValue("DoDaylightCycle", "false");
-        w.setGameRuleValue("DoMobSpawning", "false");
-        w.setDifficulty(Difficulty.PEACEFUL);
-        w.setTime(0);
-        w.setAutoSave(false);
-        w.setKeepSpawnInMemory(false);
-        instance.getGameManager().setWorld(w);
-        loadMapInfo(mapSelected);
-        this.arena = new Arena(w, mapInfo.getCuboid());
-        instance.getGameManager().selectDisasters(arena);
-
-    }
 
     @EventHandler
-    public void stopSaving(WorldSaveEvent event) {
-        World world = event.getWorld();
-        world.setAutoSave(false);
-        world.setKeepSpawnInMemory(false);
-    }
-
-    @EventHandler
-    public void stopWorldSaving(WorldUnloadEvent event) {
-        World world = event.getWorld();
-        for(Chunk chunk : world.getLoadedChunks()) chunk.unload(false);
-        world.setAutoSave(false);
-        world.setKeepSpawnInMemory(false);
-        event.setCancelled(true);
-        Bukkit.unloadWorld(world, false);
-
+    public void worldinit(WorldInitEvent e) {
+        System.out.println("world inited " + e.getWorld());
     }
 
     public void pasteTemplate(WorldMap map) {
-        this.mapSelected = map;
         String name = map.name().toLowerCase();
         File folder = new File(Bukkit.getWorldContainer(),"skywar_template/" + name);
-        File destination = new File(Bukkit.getWorldContainer(), name);
         try {
-            FileUtils.copyDirectory(folder, destination);
-            WorldCreator creator = new WorldCreator(name);
-            World w = Bukkit.getServer().createWorld(creator);
-            w.setKeepSpawnInMemory(false);
-            w.setAutoSave(false);
-
-            System.out.println("loading world " + name);
+           /* if(!folder.exists()){
+                folder.mkdir();
+            }*/
+            FileUtils.copyDirectory(Bukkit.getServer().getWorldContainer(), folder);
+            new WorldCreator(name)
+                    .environment(World.Environment.NORMAL)
+                    .createWorld();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
 
-    public void deleteWorld() {
-        if(mapInfo == null) return;
-        File folder = new File(Bukkit.getWorldContainer(), mapInfo.getMap().name().toLowerCase());
-        if(folder.exists()) {
-            try {
-                FileUtils.deleteDirectory(folder);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public Arena getArena() {
-        return arena;
     }
 
     public MapInfo getMapInfo() {
         return mapInfo;
     }
 
-    public void loadMapInfo(WorldMap map) {
+    public void loadMap() {
         try {
-            this.mapInfo = new MapLoader(instance).loadMapInfo(map);
+            this.mapInfo = new MapLoader(instance).loadMapInfo();
         } catch(IOException e) {
             e.printStackTrace();
         }
     }
 
-    public Map<UUID, WorldMap> getVoters() {
-        return voters;
-    }
-
-    public boolean isVoteAllowed() {
-        return vote;
-    }
-
-    public void setVoteAllowed(boolean vote) {
-        this.vote = vote;
-    }
 }

@@ -1,8 +1,9 @@
 package fr.cocoraid.apocalypseskywar.arena;
 
 import fr.cocoraid.apocalypseskywar.ApocalypseSkywar;
-import fr.cocoraid.apocalypseskywar.utils.UtilLocation;
-import org.bukkit.*;
+import org.bukkit.Chunk;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -16,7 +17,7 @@ public class Arena {
 
     private World w;
     private Cuboid cuboid;
-    private Set<Location> blocks = new HashSet<>();
+    private Set<Block> blocks = new HashSet<>();
     public Arena(World w, Cuboid cuboid) {
         this.w = w;
         this.cuboid = cuboid;
@@ -24,53 +25,25 @@ public class Arena {
         generatorBlocks();
     }
 
-
     public void placeBlock(Block b) {
-        blocks.add(b.getLocation());
+        blocks.add(b);
     }
 
     public void removeBlock(Block b) {
-        blocks.remove(b.getLocation());
+        blocks.remove(b);
     }
 
     public Block getRandomTopBlock() {
-        List<Location> list = blocks.stream().filter(b ->
-                b.getBlock().getRelative(BlockFace.UP).getType() == Material.AIR)
+        List<Block> list = blocks.stream().filter(b ->
+                b.getRelative(BlockFace.UP).getType() == Material.AIR)
                 .collect(Collectors.toList());
 
         if(list.isEmpty())
             return null;
         else {
             Random rand = new Random();
-            return list.get(rand.nextInt(list.size())).getBlock();
+            return list.get(rand.nextInt(list.size()));
         }
-    }
-
-    /**
-     *
-     * 500 items = 100%
-     * 10% => items(size) * iterator_percent / 100
-     *
-     * current_index = 0
-     * current_index +=
-     *
-     */
-
-    public void generateTopBlock() {
-        List<Location> locs = getTopBlocks();
-        locs.forEach(loc -> {
-            UtilLocation.setBlockSuperFast(loc.getBlock(),2,(byte) 0,false);
-        });
-
-    }
-
-    public void ungenTopBlock() {
-        List<Location> locs = getTopBlocks();
-        locs.forEach(loc -> {
-            UtilLocation.setBlockSuperFast(loc.getBlock(),0,(byte) 0,false);
-        });
-        blocks.removeAll(locs);
-
     }
 
 
@@ -93,7 +66,7 @@ public class Arena {
                             for (int yy = 0; yy < 128; yy++) {
                                 Block b = w.getBlockAt(xx,yy,zz);
                                 if(b.getType() != Material.AIR)
-                                    blocks.add(b.getLocation());
+                                    blocks.add(b);
                             }
                         }
                     }
@@ -104,22 +77,7 @@ public class Arena {
                     this.cancel();
                 }
             }
-        }.runTaskTimer(instance,0,2);
+        }.runTaskTimerAsynchronously(instance,0,0);
     }
 
-    public List<Location> getTopBlocks() {
-        List<Location> list = blocks.stream().filter(b ->
-                b.getBlock().getRelative(BlockFace.UP).getType() == Material.AIR)
-                .collect(Collectors.toList());
-        return list;
-    }
-
-
-    public Set<Location> getBlocks() {
-        return blocks;
-    }
-
-    public World getWorld() {
-        return w;
-    }
 }

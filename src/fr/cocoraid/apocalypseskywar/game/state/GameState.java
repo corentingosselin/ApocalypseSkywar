@@ -49,8 +49,7 @@ public abstract class GameState {
             @Override
             public void onQuit(PlayerQuitEvent e) {
                 e.setQuitMessage(null);
-                if(!(gm.getCurrent() instanceof GameWaiting))
-                    checkGameState();
+                checkGameState();
             }
         });
     }
@@ -83,7 +82,4 @@ public abstract class GameState {
     }
 
 
-    public boolean isGameRunning() {
-        return isGameRunning;
-    }
 }

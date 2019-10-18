@@ -5,5 +5,3 @@ version: 1.0
 commands:
     sk:
     test:
-    vote:
-    kit:
