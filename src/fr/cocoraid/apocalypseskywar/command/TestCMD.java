@@ -21,8 +21,7 @@ public class TestCMD implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender instanceof Player) {
             Player p = (Player) sender;
-            p.sendMessage("test");
-            mapManager.pasteTemplate(WorldMap.FROOZEN_FOREST);
+
         }
         return false;
     }

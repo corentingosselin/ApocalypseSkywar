@@ -1,8 +1,8 @@
 package fr.cocoraid.apocalypseskywar.position;
 
 public enum WorldMap {
-    FROOZEN_FOREST,
-    PEACEFUL_VILLAGE,
-    APOCALYPSE,
+    POISONOUS_ISLANDS,
+    PARADISE_ISLANDS,
+    APOCALYPSE_TOWN,
     SANDSTORM
 }

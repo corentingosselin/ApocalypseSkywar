@@ -48,15 +48,6 @@ public class MapInfo {
         return spawn;
     }
 
-   /*public static final Point HUB = new Point(-68,30,1421,0);
-
-                new Point(-43,44,1473,160),
-                new Point(-95,44,1473,-156),
-                new Point(-127,44,1421,-90),
-                new Point(-95,44,1369,-27),
-                new Point(-43,44,1369,26),
-                new Point(-11,44,1421,90)*/
-
 
 
 

@@ -1,14 +1,19 @@
 package fr.cocoraid.apocalypseskywar.game;
 
+import fr.cocoraid.apocalypseskywar.arena.Arena;
+import fr.cocoraid.apocalypseskywar.disaster.Disaster;
+import fr.cocoraid.apocalypseskywar.disaster.disasters.storm.StormDisaster;
 import fr.cocoraid.apocalypseskywar.game.state.GameState;
 import fr.cocoraid.apocalypseskywar.game.state.GameWaiting;
-import fr.cocoraid.apocalypseskywar.position.WorldMap;
 import org.bukkit.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameManager {
 
-    //TODO select random or vote system
-    private WorldMap map = WorldMap.FROOZEN_FOREST;
+    private List<Disaster> disasters = new ArrayList<>();
+    private List<Disaster> selectedDisasters = new ArrayList<>();
 
     private boolean damage = false;
     private boolean move = true;
@@ -18,7 +23,15 @@ public class GameManager {
     private GameState current;
 
     public GameManager() {
+        disasters.add(new StormDisaster());
+    }
 
+    public void selectDisasters(Arena arena) {
+        //TODO select and add probabilities with map that are suit for
+        selectedDisasters.add(disasters.get(0));
+
+        //setup arena object for selected disasters
+        selectedDisasters.forEach(s -> s.setArena(arena));
     }
 
     public void enable() {
@@ -59,15 +72,19 @@ public class GameManager {
         return damage;
     }
 
-    public WorldMap getMap() {
-        return map;
-    }
-
     public boolean canBlockPlaceBreak() {
         return blockPlaceBreak;
     }
 
     public void setBlockPlaceBreak(boolean blockPlaceBreak) {
         this.blockPlaceBreak = blockPlaceBreak;
+    }
+
+    public List<Disaster> getSelectedDisasters() {
+        return selectedDisasters;
+    }
+
+    public List<Disaster> getDisasters() {
+        return disasters;
     }
 }

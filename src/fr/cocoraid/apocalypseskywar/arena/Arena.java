@@ -25,6 +25,10 @@ public class Arena {
         generatorBlocks();
     }
 
+    public void fastExplosion() {
+
+    }
+
     public void placeBlock(Block b) {
         blocks.add(b);
     }
@@ -77,7 +81,10 @@ public class Arena {
                     this.cancel();
                 }
             }
-        }.runTaskTimerAsynchronously(instance,0,0);
+        }.runTaskTimer(instance,0,2);
     }
 
+    public World getWorld() {
+        return w;
+    }
 }

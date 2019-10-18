@@ -116,6 +116,8 @@ public class GameStart extends GameState {
 
 
     private void start() {
+
+
        task = new BukkitRunnable() {
             int time = 5;
             @Override
@@ -126,6 +128,7 @@ public class GameStart extends GameState {
                     this.cancel();
                     gm.setCurrent(new GameRunning());
                     gm.getCurrent().run();
+                    gm.getSelectedDisasters().forEach(d -> d.start());
                 }
             }
         }.runTaskTimer(instance,0,20);

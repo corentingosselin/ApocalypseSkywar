@@ -20,8 +20,9 @@ public class GameWaiting extends GameState {
 
     private BukkitTask taskBeforeStart;
 
-    private int timeBeforeStart = 20;
+    private int timeBeforeStart = 30;
     private int playerCount = 0;
+
 
     public GameWaiting() {
 
@@ -74,6 +75,10 @@ public class GameWaiting extends GameState {
 
 
     public void startBegin() {
+        if(mapManager.getMapInfo() == null) {
+            mapManager.setVoteAllowed(false);
+           mapManager.pasteTemplate(mapManager.selectMap());
+        }
         taskBeforeStart = new BukkitRunnable() {
             @Override
             public void run() {

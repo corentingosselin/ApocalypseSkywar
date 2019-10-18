@@ -33,13 +33,19 @@ public class CancelEvent implements Listener {
     @EventHandler
     public void placeblock(BlockPlaceEvent e) {
         if(!gm.canBlockPlaceBreak()) e.setCancelled(true);
-        arena.placeBlock(e.getBlock());
+        else {
+            if (arena != null)
+                arena.placeBlock(e.getBlock());
+        }
     }
 
     @EventHandler
     public void breakblock(BlockBreakEvent e) {
         if(!gm.canBlockPlaceBreak()) e.setCancelled(true);
-        arena.removeBlock(e.getBlock());
+        else {
+            if (arena != null)
+                arena.removeBlock(e.getBlock());
+        }
     }
 
     @EventHandler

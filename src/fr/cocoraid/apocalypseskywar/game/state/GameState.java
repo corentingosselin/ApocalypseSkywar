@@ -49,7 +49,8 @@ public abstract class GameState {
             @Override
             public void onQuit(PlayerQuitEvent e) {
                 e.setQuitMessage(null);
-                checkGameState();
+                if(!(gm.getCurrent() instanceof GameWaiting))
+                    checkGameState();
             }
         });
     }
