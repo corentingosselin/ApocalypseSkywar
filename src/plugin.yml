@@ -1,0 +1,9 @@
+name: ApocalypseSkywar
+author: cocoraid
+main: fr.cocoraid.apocalypseskywar.ApocalypseSkywar
+version: 1.0
+commands:
+    sk:
+    test:
+    vote:
+    kit:
